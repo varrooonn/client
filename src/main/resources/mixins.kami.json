@@ -38,6 +38,7 @@
     "MixinPlayerControllerMP",
     "MixinRender",
     "MixinRenderGlobal",
+    "MixinRenderLivingBase",
     "MixinRenderManager",
     "MixinRenderPlayer",
     "MixinStateImplementation",

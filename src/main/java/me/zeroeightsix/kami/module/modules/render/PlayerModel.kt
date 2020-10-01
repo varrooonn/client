@@ -7,6 +7,7 @@ import net.minecraft.client.gui.inventory.GuiInventory
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.entity.EntityLivingBase
 import net.minecraft.util.math.MathHelper
+import java.lang.NullPointerException
 
 /**
  * Ngl this code is so fucking scuffed :joy_cat:
@@ -47,15 +48,18 @@ object PlayerModel : Module() {
     }
 
     override fun onRender() {
-        entity?.let {
-            GlStateManager.pushMatrix()
-            GlStateManager.enableDepth()
-            val yaw = if (emulateYaw.value) interpolateAndWrap(it.prevRotationYaw, it.rotationYaw) else 0.0f
-            val pitch = if (emulatePitch.value) interpolateAndWrap(it.prevRotationPitch, it.rotationPitch) else 0.0f
-            GuiInventory.drawEntityOnScreen(x.value, y.value, scale.value, -yaw, -pitch, it)
-            GlStateManager.disableDepth()
-            GlStateManager.popMatrix()
-        }
+        if (mc.player == null || mc.world == null) return
+        try {
+            entity?.let {
+                GlStateManager.pushMatrix()
+                GlStateManager.enableDepth()
+                val yaw = if (emulateYaw.value) interpolateAndWrap(it.prevRotationYaw, it.rotationYaw) else 0.0f
+                val pitch = if (emulatePitch.value) interpolateAndWrap(it.prevRotationPitch, it.rotationPitch) else 0.0f
+                GuiInventory.drawEntityOnScreen(x.value, y.value, scale.value, -yaw, -pitch, it)
+                GlStateManager.disableDepth()
+                GlStateManager.popMatrix()
+            }
+        } catch (ignored: NullPointerException) {}
     }
 
     private fun interpolateAndWrap(prev: Float, current: Float): Float {
